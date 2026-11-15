@@ -1,5 +1,9 @@
 # WarioWare: Twisted! Recomp
 
+<p align="center">
+  <img src="docs/quest-vr-banner.jpg" alt="WarioWare: Twisted! Quest 3 VR" width="680" />
+</p>
+
 > **Experimental preview.** This recompilation is a byproduct of developing
 > [gbarecomp](https://github.com/mstan/gbarecomp): the games are the proving
 > ground, while the reusable framework is the larger goal. This is not a
