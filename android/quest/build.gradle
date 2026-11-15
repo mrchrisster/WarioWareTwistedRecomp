@@ -1,0 +1,149 @@
+import java.security.MessageDigest
+
+plugins {
+    id "com.android.application"
+}
+
+def repoRoot = file("../..")
+def gbaRoot = file("../../gbarecomp")
+def recompUiRoot = file("../../recomp-ui")
+def openxrDirProp = project.findProperty("openxrDir")?.toString()?.trim()
+def openxrEnv = System.getenv("OPENXR_ANDROID_DIR")?.trim()
+def openxrDir = file(
+    openxrDirProp ?: (
+        openxrEnv ?: (
+            file("../../deps/oxr").isDirectory() ? "../../deps/oxr" : "../../../deps/oxr"
+        )
+    )
+)
+
+def cmakePath = { File f -> f.canonicalPath.replace("\\", "/") }
+
+def privateRomProp = project.findProperty("privateRom")?.toString()?.trim()
+def privateRomPath = privateRomProp ? (privateRomProp.startsWith("/") ? file(privateRomProp) : rootProject.file(privateRomProp)) : null
+
+def stagedPayload = layout.buildDirectory.dir("generated/questPayload")
+
+android {
+    namespace "com.wariowaretwistedrecomp.quest"
+    compileSdk 35
+    ndkVersion "28.2.13676358"
+
+    defaultConfig {
+        applicationId "com.wariowaretwistedrecomp.quest"
+        minSdk 29
+        targetSdk 35
+        versionCode 1
+        versionName "0.1.0-quest"
+
+        ndk {
+            abiFilters "arm64-v8a"
+        }
+
+        externalNativeBuild {
+            cmake {
+                targets "SDL2", "main"
+                arguments "-DANDROID_STL=c++_shared",
+                          "-DGBA_GAME_ROOT=${cmakePath(repoRoot)}",
+                          "-DGBARECOMP_RUNTIME_UI_ROOT=${cmakePath(recompUiRoot)}",
+                          "-DGBARECOMP_QUEST_XR=ON",
+                          "-DGBARECOMP_OPENXR_INCLUDE_DIR=${cmakePath(new File(openxrDir, 'prefab/modules/headers/include'))}",
+                          "-DGBARECOMP_OPENXR_LIB=${cmakePath(new File(openxrDir, 'jni/arm64-v8a/libopenxr_loader.so'))}"
+                cppFlags "-std=c++20"
+            }
+        }
+
+        manifestPlaceholders = [
+            gbaTitle: "WarioWare: Twisted! VR",
+            gbaRomLabel: "WarioWare: Twisted! (USA)",
+            gbaRomSha1: "f0102d0d6f7596fe853d5d0a94682718278e083a",
+            gbaRomSize: "16777216",
+            gbaRomFile: "warioware_twisted_usa.gba",
+            gbaBiosRequired: "false",
+            gbaBiosSha1: "300c20df6731a33952ded8c436f7f186d25d3492",
+            gbaOrientation: "landscape-locked",
+            gbaPayloadVersion: "quest-1",
+            gbaSetupNote: "Quest 3 VR edition: Select your WarioWare: Twisted! (USA) ROM. No GBA BIOS needed. In VR: twist wrist for gyro, L+R thumbstick click cycles 3D Layered Depth.",
+            gbaGyro: "true",
+        ]
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    externalNativeBuild {
+        cmake {
+            path new File(gbaRoot, "platform/android/cpp/CMakeLists.txt")
+            version "3.22.1+"
+        }
+    }
+
+    sourceSets {
+        main {
+            manifest.srcFile "src/main/AndroidManifest.xml"
+            java.srcDirs = [
+                "src/main/java",
+                new File(gbaRoot, "platform/android/third_party/SDL/android-project/app/src/main/java"),
+                new File(gbaRoot, "platform/android/java"),
+            ]
+            res.srcDirs = [
+                "../app/src/main/res",
+                new File(gbaRoot, "platform/android/res"),
+            ]
+            jniLibs.srcDirs = [new File(openxrDir, "jni")]
+            assets.srcDirs = [stagedPayload]
+        }
+    }
+
+    androidResources {
+        noCompress += ["gba", "bin"]
+    }
+}
+
+tasks.register("stageQuestPayload", Sync) {
+    inputs.property("privateRom", privateRomPath ? privateRomPath.absolutePath : "")
+    from(file("../game_android.toml")) {
+        into("payload/variants/warioware_twisted")
+        rename { "game.toml" }
+    }
+    if (privateRomPath != null) {
+        from(privateRomPath) {
+            into("payload/roms")
+            rename { "warioware_twisted_usa.gba" }
+        }
+        doFirst {
+            if (!privateRomPath.isFile() || privateRomPath.length() != 16777216L) {
+                throw new GradleException("Private ROM must be 16777216 bytes: ${privateRomPath}")
+            }
+            def digest = MessageDigest.getInstance("SHA-1").digest(privateRomPath.bytes)
+            def sha = digest.collect { String.format("%02x", it) }.join()
+            if (sha != "f0102d0d6f7596fe853d5d0a94682718278e083a") {
+                throw new GradleException("Private ROM SHA-1 mismatch: ${sha}")
+            }
+        }
+    }
+    into(stagedPayload)
+}
+
+tasks.named("preBuild").configure { dependsOn("stageQuestPayload") }
+
+android.applicationVariants.configureEach { variant ->
+    variant.outputs.configureEach { output ->
+        if (privateRomPath != null) {
+            output.outputFileName =
+                "warioware_twisted-quest-${variant.buildType.name}-PRIVATE-rom-included.apk"
+        } else {
+            output.outputFileName =
+                "warioware_twisted-quest-${variant.buildType.name}.apk"
+        }
+    }
+}

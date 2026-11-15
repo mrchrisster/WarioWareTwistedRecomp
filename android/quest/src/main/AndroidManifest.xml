@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-feature android:glEsVersion="0x00030000" android:required="true" />
+    <uses-feature android:name="android.hardware.vr.headtracking" android:required="true" android:version="1" />
+    <uses-feature android:name="com.oculus.feature.PASSTHROUGH" android:required="false" />
+    <uses-permission android:name="org.khronos.openxr.permission.OPENXR" />
+    <uses-permission android:name="org.khronos.openxr.permission.OPENXR_SYSTEM" />
+
+    <queries>
+        <provider android:authorities="org.khronos.openxr.runtime_broker;org.khronos.openxr.system_runtime_broker" />
+    </queries>
+
+    <application
+        android:allowBackup="false"
+        android:hardwareAccelerated="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="WarioWare: Twisted! VR"
+        android:roundIcon="@mipmap/ic_launcher"
+        android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+        <meta-data android:name="com.oculus.supportedDevices" android:value="quest2|quest3|quest3s|questpro" />
+        <meta-data android:name="com.oculus.vr.focusaware" android:value="true" />
+
+        <meta-data android:name="gbarecomp.title" android:value="${gbaTitle}" />
+        <meta-data android:name="gbarecomp.rom_label" android:value="${gbaRomLabel}" />
+        <meta-data android:name="gbarecomp.rom_sha1" android:value="${gbaRomSha1}" />
+        <meta-data android:name="gbarecomp.rom_size" android:value="${gbaRomSize}" />
+        <meta-data android:name="gbarecomp.rom_file" android:value="${gbaRomFile}" />
+        <meta-data android:name="gbarecomp.bios_required" android:value="${gbaBiosRequired}" />
+        <meta-data android:name="gbarecomp.bios_sha1" android:value="${gbaBiosSha1}" />
+        <meta-data android:name="gbarecomp.orientation" android:value="${gbaOrientation}" />
+        <meta-data android:name="gbarecomp.payload_version" android:value="${gbaPayloadVersion}" />
+        <meta-data android:name="gbarecomp.setup_note" android:value="${gbaSetupNote}" />
+        <meta-data android:name="gbarecomp.gyro" android:value="${gbaGyro}" />
+
+        <activity
+            android:name="com.wariowaretwistedrecomp.quest.WarioWareQuestSetupActivity"
+            android:alwaysRetainTaskState="true"
+            android:configChanges="density|keyboard|keyboardHidden|navigation|orientation|screenLayout|screenSize|uiMode"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.wariowaretwistedrecomp.quest.WarioWareQuestActivity"
+            android:alwaysRetainTaskState="true"
+            android:configChanges="density|keyboard|keyboardHidden|navigation|orientation|screenLayout|screenSize|uiMode"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.oculus.intent.category.VR" />
+            </intent-filter>
+            <meta-data android:name="com.oculus.vr.intent.category.IMMERSIVE_HMD" android:value="true" />
+        </activity>
+    </application>
+</manifest>

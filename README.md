@@ -7,11 +7,58 @@
 > For more context, read
 > [Recomp + AI: 5 Months Later »](https://1379.tech/recomp-ai-5-months-later/).
 
-Static recompilation of **WarioWare: Twisted!** for Windows and Android, with
-native motion controls for the cartridge's built-in gyroscope.
+Static recompilation of **WarioWare: Twisted!** for **Meta Quest 3 / 3S (OpenXR VR)**, Windows, and Android, with native motion controls for the cartridge's built-in gyroscope and stereoscopic **3D Layered Depth Mode**.
 
-The game ROM and Nintendo GBA BIOS are **not included**. You must provide your
-own legally obtained dumps.
+The game ROM and Nintendo GBA BIOS are **not included**. You must provide your own legally obtained dumps.
+
+## Meta Quest 3 / 3S (OpenXR VR)
+
+The Quest 3 port ([`android/quest`](android/quest/build.gradle)) runs natively via OpenXR + OpenGL ES 3 with zero BIOS required (using the built-in native HLE BIOS dispatch trampoline).
+
+### Quest VR Features
+
+- **3D Layered Depth Mode (5 OpenXR Quad Planes):** Separates the GBA PPU output into 5 independent hardware composition planes (`Backdrop`, `Priority 3`, `Priority 2`, `Priority 1`, `Priority 0`) spaced in depth along `-Z`, with perspective-matched sizing, disoccluded background preservation, and GBA `BLDCNT`/`BLDALPHA`/`BLDY` alpha and fade compositing.
+- **Touch Plus Wrist-Twist Gyroscope:** Maps angular velocity around the active Touch Plus controller's forward axis (`+Z`) directly into the game's cartridge gyro (`S25343B`).
+- **Cartridge Rumble Haptics:** Feeds the cartridge rumble actuator directly to the active Quest controller's OpenXR vibration motors.
+- **Mixed Reality Passthrough + HUD Bar:** Toggleable Mixed Reality (`XR_FB_passthrough`) and live control-legend HUD (`Gyro Hand`, `Depth Mode`, `MR` state).
+- **65536 Hz OpenSL ES Audio** + persistent in-game cartridge SRAM saves.
+
+### Quest 3 Quick Start (Bring Your Own ROM)
+
+1. Download `warioware_twisted-quest-release.apk` from [Releases](https://github.com/mrchrisster/WarioWareTwistedRecomp/releases) and sideload it (`adb install -r warioware_twisted-quest-release.apk` or SideQuest).
+2. On first launch, use the **Select ROM** button in the setup window to pick your legally dumped **`WarioWare - Twisted! (USA).gba`** (`SHA-1: f0102d0d6f7596fe853d5d0a94682718278e083a`, `16 MiB`).
+   - *Alternative via ADB:* `adb push "WarioWare - Twisted! (USA).gba" /sdcard/Download/` before launching.
+   - *No GBA BIOS file is required on Quest.*
+3. Tap **Play** (optionally check **Skip launcher on boot**) to enter immersive Quest VR.
+
+### Quest 3 Controls
+
+| Action | Quest Touch Plus Control |
+|---|---|
+| Cartridge Gyroscope | Twist active wrist (`Right` hand default) |
+| **3D Layered Depth** (`3D 6cm` / `3D Deep 11cm` / `2D Flat`) | **Click `L + R` Thumbsticks together** |
+| Recenter Virtual Screen | **Right Thumbstick Click** (`R-CLK`) |
+| Swap Active Gyro Hand (`Right` / `Left`) | **Left Thumbstick Click** (`L-CLK`) |
+| Cycle Mixed Reality / HUD (`MR+HUD` -> `MR Clean` -> `Void`) | **Left Menu Button** (`MENU`) |
+| D-Pad | Left or Right Thumbstick |
+| GBA `A` / `B` | `A` or Right Trigger / `B` |
+| GBA `L` / `R` | Left Trigger or Left Grip / Right Grip |
+| `Start` / `Select` | `X` / `Y` |
+
+### Building Quest 3 APK from Source
+
+1. Clone with submodules and run the `gbarecomp` static recompiler locally to generate `variants/warioware_twisted/generated/` from your ROM and BIOS.
+2. Provide the OpenXR Mobile Loader SDK (`deps/oxr` or `-PopenxrDir=/path/to/oxr` containing `prefab/modules/headers/include` and `jni/arm64-v8a/libopenxr_loader.so`).
+3. Build the clean BYO-ROM APK:
+
+```bash
+cd android
+./gradlew :quest:assembleRelease -PopenxrDir=/path/to/oxr
+```
+
+The clean APK is written to `android/quest/build/outputs/apk/release/warioware_twisted-quest-release.apk`. (For local private sideloading only, `-PprivateRom=/path/to/WarioWare.gba` embeds a verified ROM locally without modifying git-tracked files.)
+
+---
 
 ## Status
 

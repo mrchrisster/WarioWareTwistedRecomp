@@ -3,5 +3,5 @@
 	url = https://github.com/mstan/recomp-ui.git
 [submodule "gbarecomp"]
 	path = gbarecomp
-	url = https://github.com/mstan/gbarecomp.git
-	branch = main
+	url = https://github.com/mrchrisster/gbarecomp.git
+	branch = quest-vr

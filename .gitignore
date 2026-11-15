@@ -31,6 +31,9 @@ build-*/
 android/local.properties
 android/.cxx/
 android/app/.cxx/
+android/quest/.cxx/
+android/quest/build/
+deps/
 .bldtmp/
 release-stage/
 *.exe
