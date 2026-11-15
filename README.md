@@ -13,6 +13,12 @@ The game ROM and Nintendo GBA BIOS are **not included**. You must provide your o
 
 ## Meta Quest 3 / 3S (OpenXR VR)
 
+The Quest 3 is uniquely suited for **WarioWare: Twisted!**:
+
+- **Full-Color Virtual Boy Vibes:** Separating the GBA's background and sprite priorities into 5 floating OpenXR stereoscopic depth planes gives every microgame genuine 3D parallax — like a crisp, vibrant, full-color Virtual Boy where classic pixel art pops off the screen.
+- **Play From the Couch With One Controller:** Since almost the entire game revolves around twisting plus `A`, you can kick back on the couch and play effortlessly one-handed with a single Touch Plus controller (twist your wrist naturally while thumbstick, `A`/trigger, `B`, and `R` grip are all right under your hand — or click the left thumbstick to switch to your left hand anytime).
+- **Glorious, Razor-Sharp Pixel Art:** Rendered onto `4x` (`960x640`) integer-scaled OpenXR swapchains, the GBA sprites and palettes look bright, vivid, and razor sharp floating in Mixed Reality passthrough or Dark Void mode.
+
 The Quest 3 port ([`android/quest`](android/quest/build.gradle)) runs natively via OpenXR + OpenGL ES 3 with zero BIOS required (using the built-in native HLE BIOS dispatch trampoline).
 
 ### Quest VR Features
