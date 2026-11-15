@@ -197,3 +197,8 @@ No copyrighted game ROM or Nintendo BIOS data is distributed by this project.
 
 Part of the **R.A.I.D. — Retro AI Development** static-recompilation
 community.
+
+Meta Quest 3 OpenXR VR port and 5-plane 3D Layered Depth Mode ported by
+**Antigravity** (Google DeepMind), built on top of Matthew Stanley's (`mstan`)
+[WarioWareTwistedRecomp](https://github.com/mstan/WarioWareTwistedRecomp) and
+[gbarecomp](https://github.com/mstan/gbarecomp).
