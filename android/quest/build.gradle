@@ -33,8 +33,8 @@ android {
         applicationId "com.wariowaretwistedrecomp.quest"
         minSdk 29
         targetSdk 35
-        versionCode 1
-        versionName "0.1.0-quest"
+        versionCode 2
+        versionName "0.1.1-quest"
 
         ndk {
             abiFilters "arm64-v8a"
@@ -44,12 +44,14 @@ android {
             cmake {
                 targets "SDL2", "main"
                 arguments "-DANDROID_STL=c++_shared",
+                          "-DCMAKE_BUILD_TYPE=Release",
                           "-DGBA_GAME_ROOT=${cmakePath(repoRoot)}",
                           "-DGBARECOMP_RUNTIME_UI_ROOT=${cmakePath(recompUiRoot)}",
                           "-DGBARECOMP_QUEST_XR=ON",
                           "-DGBARECOMP_OPENXR_INCLUDE_DIR=${cmakePath(new File(openxrDir, 'prefab/modules/headers/include'))}",
                           "-DGBARECOMP_OPENXR_LIB=${cmakePath(new File(openxrDir, 'jni/arm64-v8a/libopenxr_loader.so'))}"
-                cppFlags "-std=c++20"
+                cFlags "-O3"
+                cppFlags "-std=c++20", "-O3"
             }
         }
 

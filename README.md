@@ -47,7 +47,8 @@ The Quest 3 port ([`android/quest`](android/quest/build.gradle)) runs natively v
 |---|---|
 | Cartridge Gyroscope | Twist active wrist (`Right` hand default) |
 | **3D Layered Depth** (`3D 6cm` / `3D Deep 11cm` / `2D Flat`) | **Click `L + R` Thumbsticks together** |
-| Recenter Virtual Screen | **Right Thumbstick Click** (`R-CLK`) |
+| Recenter Virtual Screen (works reclining / lying down) | **Right Thumbstick Click** (`R-CLK`) or long-press **Meta Button** |
+| Reposition / Tilt / Distance Window | **Hold Both Side Grips** (hand spread or **Thumbstick Y** adjusts distance) |
 | Swap Active Gyro Hand (`Right` / `Left`) | **Left Thumbstick Click** (`L-CLK`) |
 | Cycle Mixed Reality / HUD (`MR+HUD` -> `MR Clean` -> `Void`) | **Left Menu Button** (`MENU`) |
 | D-Pad | Left or Right Thumbstick |
