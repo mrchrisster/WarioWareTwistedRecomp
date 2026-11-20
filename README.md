@@ -30,7 +30,9 @@ The Quest 3 port ([`android/quest`](android/quest/build.gradle)) runs natively v
 - **3D Layered Depth Mode (5 OpenXR Quad Planes):** Separates the GBA PPU output into 5 independent hardware composition planes (`Backdrop`, `Priority 3`, `Priority 2`, `Priority 1`, `Priority 0`) spaced in depth along `-Z`, with perspective-matched sizing, disoccluded background preservation, and GBA `BLDCNT`/`BLDALPHA`/`BLDY` alpha and fade compositing.
 - **Touch Plus Wrist-Twist Gyroscope:** Maps angular velocity around the active Touch Plus controller's forward axis (`+Z`) directly into the game's cartridge gyro (`S25343B`).
 - **Cartridge Rumble Haptics:** Feeds the cartridge rumble actuator directly to the active Quest controller's OpenXR vibration motors.
-- **Mixed Reality Passthrough + HUD Bar:** Toggleable Mixed Reality (`XR_FB_passthrough`) and live control-legend HUD (`Gyro Hand`, `Depth Mode`, `MR` state).
+- **VR Options Menu (`MENU` button, pauses the game):** save / load state (3 slots), 3D depth, **gyro sensitivity** (`0.25x`-`4.00x`), **gyro hand** (`Right` / `Left`), background (room passthrough / dark), edges (shadow box / window), auto resume, recenter and screen-size reset. Choices are remembered.
+- **Shadow Box:** a dark frame sits right in front of the front layer so the deeper layers stay inside the box when you lean (or pick `WINDOW` to clip every layer to the screen).
+- **Resume Where You Left Off:** the game resumes your last session on launch, and the screen distance / size you set with the grips is remembered.
 - **65536 Hz OpenSL ES Audio** + persistent in-game cartridge SRAM saves.
 
 ### Quest 3 Quick Start (Bring Your Own ROM)
@@ -39,18 +41,17 @@ The Quest 3 port ([`android/quest`](android/quest/build.gradle)) runs natively v
 2. On first launch, use the **Select ROM** button in the setup window to pick your legally dumped **`WarioWare - Twisted! (USA).gba`** (`SHA-1: f0102d0d6f7596fe853d5d0a94682718278e083a`, `16 MiB`).
    - *Alternative via ADB:* `adb push "WarioWare - Twisted! (USA).gba" /sdcard/Download/` before launching.
    - *No GBA BIOS file is required on Quest.*
-3. Tap **Play** (optionally check **Skip launcher on boot**) to enter immersive Quest VR.
+3. Tap **Play** to enter immersive Quest VR. Later launches skip the setup screen and go straight into VR (it returns if the ROM goes missing).
 
 ### Quest 3 Controls
 
 | Action | Quest Touch Plus Control |
 |---|---|
 | Cartridge Gyroscope | Twist active wrist (`Right` hand default) |
-| **3D Layered Depth** (`3D 6cm` / `3D Deep 11cm` / `2D Flat`) | **Click `L + R` Thumbsticks together** |
+| **Options menu** (pauses; stick = move / change, `A` = OK, `B` = close) | **Left Menu Button** (`MENU`) |
 | Recenter Virtual Screen (works reclining / lying down) | **Right Thumbstick Click** (`R-CLK`) or long-press **Meta Button** |
 | Reposition / Tilt / Distance Window | **Hold Both Side Grips** (hand spread or **Thumbstick Y** adjusts distance) |
-| Swap Active Gyro Hand (`Right` / `Left`) | **Left Thumbstick Click** (`L-CLK`) |
-| Cycle Mixed Reality / HUD (`MR+HUD` -> `MR Clean` -> `Void`) | **Left Menu Button** (`MENU`) |
+| 3D depth, gyro sensitivity / hand, background, edges | Options menu |
 | D-Pad | Left or Right Thumbstick |
 | GBA `A` / `B` | `A` or Right Trigger / `B` |
 | GBA `L` / `R` | Left Trigger or Left Grip / Right Grip |

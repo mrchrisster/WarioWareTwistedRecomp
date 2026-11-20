@@ -1,7 +1,8 @@
 [submodule "recomp-ui"]
 	path = recomp-ui
-	url = https://github.com/mstan/recomp-ui.git
+	url = https://github.com/mrchrisster/recomp-ui.git
+	branch = wl4-vr
 [submodule "gbarecomp"]
 	path = gbarecomp
 	url = https://github.com/mrchrisster/gbarecomp.git
-	branch = quest-vr
+	branch = warioware-vr

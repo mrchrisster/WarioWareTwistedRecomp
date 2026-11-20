@@ -31,6 +31,8 @@
         <meta-data android:name="gbarecomp.payload_version" android:value="${gbaPayloadVersion}" />
         <meta-data android:name="gbarecomp.setup_note" android:value="${gbaSetupNote}" />
         <meta-data android:name="gbarecomp.gyro" android:value="${gbaGyro}" />
+        <meta-data android:name="gbarecomp.bios_prompt" android:value="false" />
+        <meta-data android:name="gbarecomp.skip_setup_when_ready" android:value="true" />
 
         <activity
             android:name="com.wariowaretwistedrecomp.quest.WarioWareQuestSetupActivity"

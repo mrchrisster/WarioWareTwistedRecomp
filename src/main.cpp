@@ -7,6 +7,8 @@
 #include "mobile_platform.h"
 #include "runtime.h"
 
+extern "C" int g_layered_unify_objects;
+
 #if defined(GBAGAME_RECOMP_UI)
 #include "game_launcher_boot.h"
 #endif
@@ -98,6 +100,37 @@ int warioware_main(int argc, char** argv) {
     opts.gyro_sensitivity_calibration = 0.75f;
 #if defined(__ANDROID__)
     opts.ui_touch_friendly = true;
+#endif
+#if defined(GBARECOMP_QUEST_XR)
+    // Quest VR: shared Wario Land 4 VR runtime features.
+    // Sprites stay on their own GBA priority planes (Mother 3's object clamp hid them).
+    g_layered_unify_objects = 0;
+    // OpenSL ES instead of SDL's Java AudioTrack driver, whose thread stalls break up the sound.
+    setenv("SDL_AUDIODRIVER", "openslES", 0);
+    // Resume where the player left off (suspend state / newest state); AUTO RESUME in the menu.
+    opts.resume_suspend_state_on_launch = true;
+    opts.resume_newest_state_on_launch = true;
+    opts.snapshot_on_battery_flush = true;
+    // Performance cores, sustained-high CPU clocks, no background diagnostic replay recorder.
+    setenv("GBARECOMP_BIG_CORES", "1", 0);
+    setenv("GBARECOMP_XR_CPU_HIGH", "1", 0);
+    setenv("GBARECOMP_DIAGNOSTICS", "0", 0);
+    // Keep the screen distance / size the player last set with the grips.
+    setenv("GBARECOMP_XR_REMEMBER_VIEW", "1", 0);
+    // VR options menu on the Menu button: save/load state, 3D depth, background, edges,
+    // auto resume, recenter, reset screen size.
+    setenv("GBARECOMP_XR_MENU", "1", 0);
+    setenv("GBARECOMP_XR_TITLE", "WARIOWARE TWISTED VR", 0);
+    // Shadow box like Wario Land 4: 24 GBA px of edge-extended margin on every layer and a dark
+    // frame right in front of the front layer (EDGES = SHADOW BOX), or every layer clipped to
+    // the front layer's rectangle (EDGES = WINDOW). Without it the deeper layers' edges float
+    // free of the front layer.
+    setenv("GBARECOMP_XR_SHADOWBOX", "24", 0);
+    setenv("GBARECOMP_XR_BOXWALLS", "0", 0);
+    setenv("GBARECOMP_XR_WINDOW", "0", 0);
+    setenv("GBARECOMP_XR_DARK", "1", 0);
+    // Cartridge gyro from wrist twist on the Touch controller (L-stick click swaps hand).
+    setenv("GBARECOMP_XR_GYRO", "1", 0);
 #endif
 
 #if defined(GBAGAME_RECOMP_UI)
